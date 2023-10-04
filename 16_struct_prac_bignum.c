@@ -441,7 +441,8 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
     a.sign = 0;
     b.sign = 0;
 
-    int loc = 0, len, count;
+    int loc =  a.i_total_digit - b.i_total_digit + 2;
+    int len, count;
     int diff = -1;
     struct BigNum temp;
 
@@ -450,9 +451,6 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
         if ((len == 2) && (diff == 0)) len = b.i_total_digit;
         else if ((len == 3) && (diff == 1)) len = b.i_total_digit;
         else len = b.i_total_digit - 1; 
-
-        if (a.i_total_digit > 0) loc = a.i_total_digit - len + 1;
-        else loc += (1-len);
 
         do
         {
@@ -481,7 +479,7 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
 
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
-    if (loc < 0) temp.d_total_digit += (loc - 1);
+    if (loc < 0) temp.d_total_digit += (loc + len - 1);
 
     temp.sign = 0;
 
