@@ -481,14 +481,14 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
 
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
-    if (loc <= 0) temp.d_total_digit += (loc - 1);
+    if (loc < 0) temp.d_total_digit += (loc - 1);
 
     temp.sign = 0;
 
     int temp_loc = loc;
     for (i = 1; i <= temp.i_total_digit; i++)
     {
-        if (loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
+        if (temp_loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
         else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
         temp_loc++;
     }
