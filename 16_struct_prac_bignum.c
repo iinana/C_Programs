@@ -34,7 +34,7 @@ void conv_to_BigNum(struct BigNum *res, int *m);
 
 /* 4. divide function */
 struct BigNum divi(struct BigNum a, struct BigNum b);
-struct BigNum make_temp(struct BigNum a, struct BigNum b, int *loc, int len);
+struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len);
 int part_div(struct BigNum *a, struct BigNum *b, struct BigNum *temp);
 void save_res(struct BigNum *res, int loc, int count);
 void save_int_part(struct BigNum *a, struct BigNum temp, int loc, int diff);
@@ -441,7 +441,7 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
     a.sign = 0;
     b.sign = 0;
 
-    int loc, len, count;
+    int loc = 0, len, count;
     int diff = -1;
     struct BigNum temp;
 
@@ -451,15 +451,15 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
         else if ((len == 3) && (diff == 1)) len = b.i_total_digit;
         else len = b.i_total_digit - 1; 
 
-        if (a.i_total_digit > 0) loc = a.i_total_digit + 2;
-        else loc += (len + 1);
+        if (a.i_total_digit > 0) loc = a.i_total_digit - len + 1;
+        else loc += (1-len);
 
         do
         {
-            loc += len;
             len++;
+            loc--;
             
-            temp = make_temp(a, b, &loc, len);
+            temp = make_temp(a, b, loc, len);
             count = part_div(&a, &b, &temp);
 
             if ((len > (a.i_total_digit+a.d_total_digit)) || (abs(loc) >= 100)) return res;
@@ -474,30 +474,30 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
     return res;
 }
 
-struct BigNum make_temp(struct BigNum a, struct BigNum b, int *loc, int len)
+struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
 {
     struct BigNum temp;
     int i;
 
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
-    if (*loc <= 0) temp.d_total_digit += (*loc - 1);
+    if (loc <= 0) temp.d_total_digit += (loc - 1);
 
     temp.sign = 0;
 
-    for (i = temp.i_total_digit; i > 0; i--)
+    int temp_loc = loc;
+    for (i = 1; i <= temp.i_total_digit; i++)
     {
-        --*loc;
-        if (*loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-*loc];
-        else temp.i_digit[LIMIT-i] = a.d_digit[abs(*loc)];
+        if (loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
+        else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
+        temp_loc++;
     }
 
-    int temp_loc = *loc;
     for (i = 0; i < temp.d_total_digit; i++)
     {
-        temp_loc--;
-        if (temp_loc > 0) temp.d_digit[i] = a.i_digit[LIMIT-temp_loc];
-        else temp.d_digit[i] = a.d_digit[abs(temp_loc)];  
+        loc--;
+        if (loc > 0) temp.d_digit[i] = a.i_digit[LIMIT-loc];
+        else temp.d_digit[i] = a.d_digit[abs(loc)];  
     }
 
     return temp;
