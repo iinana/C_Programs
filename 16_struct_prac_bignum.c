@@ -70,13 +70,13 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 2;
+    b.i_total_digit = 5;
     b.d_total_digit = 4;
     b.sign = 0;
 
     struct BigNum res = divi(a, b);
     print_BigNum(res);
-    printf("%llf\n", 6749.84618/20.2739);
+    printf("%llf\n", 6749.84618/95020.2739);
     //printf("%llf\n", 49.846*20.27);
     return 0;
 }
@@ -469,7 +469,6 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
         save_int_part(&a, temp, loc, diff);
         save_dec_part(&a, temp, loc);
     }
-    printf("finish loop\n");
     return res;
 }
 
@@ -582,8 +581,12 @@ void print_BigNum(struct BigNum num)
 
     int i;
     if (num.sign == 1) printf("-");
-    for (i = (LIMIT - num.i_total_digit); i < LIMIT; i++) printf("%d", num.i_digit[i]);
-    printf(".");
+    if (num.i_total_digit = 0) printf("0");
+    else 
+    {
+        for (i = (LIMIT - num.i_total_digit); i < LIMIT; i++) printf("%d", num.i_digit[i]);
+    }
+    printf(".");''
     for (i = 0; i < num.d_total_digit; i++) printf("%d", num.d_digit[i]);
     printf("\n");
 }
