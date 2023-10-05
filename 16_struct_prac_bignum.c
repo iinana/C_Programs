@@ -469,6 +469,7 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
         save_int_part(&a, temp, loc, diff);
         save_dec_part(&a, temp, loc);
     }
+    printf("finish loop\n");
     return res;
 }
 
@@ -484,6 +485,12 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
     temp.sign = 0;
 
     int temp_loc = loc;
+    while ((temp_loc <= 0) && (a.d_digit[abs(temp_loc)] == 0))
+    {
+        temp_loc--;
+        temp.i_total_digit--;
+    }
+
     for (i = 1; i <= temp.i_total_digit; i++)
     {
         if (temp_loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
