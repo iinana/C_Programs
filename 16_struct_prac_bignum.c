@@ -491,6 +491,16 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
         }
     }
 
+    if ((temp.d_total_digit < 0) && (abs(loc) <= a.d_total_digit))
+    {
+        int start_point = a.d_total_digit + temp.d_total_digit;
+        while (a.d_digit[start_point - temp.i_total_digit] == 0) 
+        {
+            temp.d_total_digit++;
+            temp.i_total_digit--;
+        }
+    }
+
     int temp_loc = loc;
     for (i = 1; i <= temp.i_total_digit; i++)
     {
@@ -504,6 +514,7 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
         else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
         temp_loc++;
     }
+    
 
     i = temp.i_total_digit;
     while (temp.i_digit[LIMIT-i] == 0)
