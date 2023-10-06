@@ -70,7 +70,7 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 5;
+    b.i_total_digit = 2;
     b.d_total_digit = 4;
     b.sign = 0;
 
@@ -442,15 +442,16 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
     b.sign = 0;
 
     int loc =  a.i_total_digit - b.i_total_digit + 2;
-    int len, count;
+    int len = b.i_total_digit;
+    int count;
     int diff = -1;
     struct BigNum temp;
 
     while (res.d_total_digit < 100)
     {
-        if ((len == b.i_total_digit) && (diff == 0)) len = b.i_total_digit;
-        else if ((len == (b.i_total_digit+1)) && (diff == 1)) len = b.i_total_digit;
-        else len = b.i_total_digit - 1; 
+        if (diff == -1) len--;
+        else if (diff <= (len - b.i_total_digit)) len -= diff;
+        else len = b.i_total_digit - 1;
 
         do
         {
@@ -460,9 +461,8 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
             temp = make_temp(a, b, loc, len);
             count = part_div(&a, &b, &temp);
 
-            if ((len > (a.i_total_digit+a.d_total_digit)) || (abs(loc) >= 100)) return res;
-
             save_res(&res, loc, count);
+            if ((abs(loc) >= 100) || ((temp.d_total_digit == 0) && (temp.i_total_digit == 0))) return res;
         } while (count == 0);
 
         diff = len - temp.i_total_digit;
