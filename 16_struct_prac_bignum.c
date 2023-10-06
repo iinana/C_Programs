@@ -70,7 +70,7 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 5;
+    b.i_total_digit = 2;
     b.d_total_digit = 4;
     b.sign = 0;
 
@@ -479,7 +479,15 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
 
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
-    if (loc < 0) temp.d_total_digit += (loc + len - 1);
+    if (a.i_total_digit == 0)
+    {
+        i = 0;
+        while (a.d_digit[i] == 0) 
+        {
+            temp.d_total_digit--;
+            i++;
+        }
+    }
 
     temp.sign = 0;
 
@@ -586,7 +594,7 @@ void print_BigNum(struct BigNum num)
     {
         for (i = (LIMIT - num.i_total_digit); i < LIMIT; i++) printf("%d", num.i_digit[i]);
     }
-    printf(".");''
+    printf(".");
     for (i = 0; i < num.d_total_digit; i++) printf("%d", num.d_digit[i]);
     printf("\n");
 }
