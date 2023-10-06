@@ -70,14 +70,14 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 2;
+    b.i_total_digit = 5;
     b.d_total_digit = 4;
     b.sign = 0;
 
     struct BigNum res = divi(a, b);
     print_BigNum(res);
     printf("%llf\n", 6749.84618/95020.2739);
-    //printf("%llf\n", 49.846*20.27);
+    printf("-332.9327943809528507095329463004158055430874178130502764638278772214522119572455225684254139558743014417\n");
     return 0;
 }
 
@@ -448,8 +448,8 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
 
     while (res.d_total_digit < 100)
     {
-        if ((len == 2) && (diff == 0)) len = b.i_total_digit;
-        else if ((len == 3) && (diff == 1)) len = b.i_total_digit;
+        if ((len == b.i_total_digit) && (diff == 0)) len = b.i_total_digit;
+        else if ((len == (b.i_total_digit+1)) && (diff == 1)) len = b.i_total_digit;
         else len = b.i_total_digit - 1; 
 
         do
@@ -477,8 +477,10 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
     struct BigNum temp;
     int i;
 
+    temp.sign = 0;
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
+
     if (a.i_total_digit == 0)
     {
         i = 0;
@@ -489,20 +491,25 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
         }
     }
 
-    temp.sign = 0;
-
     int temp_loc = loc;
-    while ((temp_loc <= 0) && (a.d_digit[abs(temp_loc)] == 0))
-    {
-        temp_loc--;
-        temp.i_total_digit--;
-    }
-
     for (i = 1; i <= temp.i_total_digit; i++)
     {
+        while (temp.d_total_digit < 0)
+        {
+            temp.i_digit[LIMIT - i] = 0;
+            temp.d_total_digit++;
+            i++;
+        }
         if (temp_loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
         else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
         temp_loc++;
+    }
+
+    i = temp.i_total_digit;
+    while (temp.i_digit[LIMIT-i] == 0)
+    {
+        temp.i_total_digit--;
+        i--;
     }
 
     for (i = 0; i < temp.d_total_digit; i++)
@@ -589,7 +596,7 @@ void print_BigNum(struct BigNum num)
 
     int i;
     if (num.sign == 1) printf("-");
-    if (num.i_total_digit = 0) printf("0");
+    if (num.i_total_digit == 0) printf("0");
     else 
     {
         for (i = (LIMIT - num.i_total_digit); i < LIMIT; i++) printf("%d", num.i_digit[i]);
