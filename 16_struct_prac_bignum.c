@@ -581,10 +581,7 @@ void print_BigNum(struct BigNum num)
 
     int i;
     if (num.sign == 1) printf("-");
-    if (num.i_total_digit = 0) 
-    {
-        printf("0");
-    }
+    if (num.i_total_digit == 0) printf("0");
     else 
     {
         for (i = (LIMIT - num.i_total_digit); i < LIMIT; i++) printf("%d", num.i_digit[i]);
