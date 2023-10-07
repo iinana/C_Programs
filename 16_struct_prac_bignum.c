@@ -70,14 +70,12 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 2;
+    b.i_total_digit = 5;
     b.d_total_digit = 4;
     b.sign = 0;
 
-    struct BigNum res = divi(a, b);
+    struct BigNum res = divi(b, a);
     print_BigNum(res);
-    printf("%llf\n", 6749.84618/95020.2739);
-    printf("-332.9327943809528507095329463004158055430874178130502764638278772214522119572455225684254139558743014417\n");
     return 0;
 }
 
@@ -466,7 +464,6 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
             count = part_div(&a, &b, &temp);
 
             save_res(&res, loc, count);
-            printf("loc = %d, count = %d, res.int_total_degit = %d\n", loc, count, res.i_total_digit);
             if ((a.d_total_digit >= 99) || (abs(loc) >= 99) || ((temp.d_total_digit == 0) && (temp.i_total_digit == 0))) return res;
         } while (count == 0);
 
@@ -561,7 +558,6 @@ int part_div(struct BigNum *a, struct BigNum *b, struct BigNum *temp)
 
 void save_res(struct BigNum *res, int loc, int count)
 {
-    printf("loc = %d, count = %d\n", loc, count);
     if (loc > 0) 
     {
         res->i_digit[LIMIT-loc] = count;
