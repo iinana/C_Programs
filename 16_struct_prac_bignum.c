@@ -70,7 +70,7 @@ int main()
     b.d_digit[1] = 7;
     b.d_digit[2] = 3;
     b.d_digit[3] = 9;
-    b.i_total_digit = 2;
+    b.i_total_digit = 5;
     b.d_total_digit = 4;
     b.sign = 0;
 
@@ -516,7 +516,15 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
             i++;
         }
         if (temp_loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
-        else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
+        else 
+        {
+            if (abs(temp_loc) >= a.d_total_digit)
+            {
+                temp.d_total_digit = abs(temp_loc);
+                break;
+            }
+            temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
+        }
         temp_loc++;
     }
     
