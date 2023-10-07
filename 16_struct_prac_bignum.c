@@ -77,7 +77,7 @@ int main()
     struct BigNum res = divi(a, b);
     print_BigNum(res);
     printf("%llf\n", 6749.84618/95020.2739);
-    //printf("%llf\n", 49.846*20.27);
+    printf("-332.9327943809528507095329463004158055430874178130502764638278772214522119572455225684254139558743014417\n");
     return 0;
 }
 
@@ -320,7 +320,11 @@ void down_int(struct BigNum *num)
         }       
     }
     
-    while (num->i_digit[LIMIT - len] == 0) len--;
+    while (num->i_digit[LIMIT-len] == 0)
+    {
+        len--;
+        if (len == 0) break;
+    }
     num->i_total_digit = len;
 }
 
@@ -442,15 +446,16 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
     b.sign = 0;
 
     int loc =  a.i_total_digit - b.i_total_digit + 2;
-    int len, count;
+    int len = b.i_total_digit;
+    int count;
     int diff = -1;
     struct BigNum temp;
 
     while (res.d_total_digit < 100)
     {
-        if ((len == 2) && (diff == 0)) len = b.i_total_digit;
-        else if ((len == 3) && (diff == 1)) len = b.i_total_digit;
-        else len = b.i_total_digit - 1; 
+        if (diff == -1) len--;
+        else if (diff <= (len - b.i_total_digit)) len -= diff;
+        else len = b.i_total_digit - 1;
 
         do
         {
@@ -460,9 +465,9 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
             temp = make_temp(a, b, loc, len);
             count = part_div(&a, &b, &temp);
 
-            if ((len > (a.i_total_digit+a.d_total_digit)) || (abs(loc) >= 100)) return res;
-
             save_res(&res, loc, count);
+            printf("loc = %d, count = %d, res.int_total_degit = %d\n", loc, count, res.i_total_digit);
+            if ((a.d_total_digit >= 99) || (abs(loc) >= 99) || ((temp.d_total_digit == 0) && (temp.i_total_digit == 0))) return res;
         } while (count == 0);
 
         diff = len - temp.i_total_digit;
@@ -477,20 +482,52 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
     struct BigNum temp;
     int i;
 
+    temp.sign = 0;
     temp.i_total_digit = len;
     temp.d_total_digit = (a.i_total_digit + a.d_total_digit) - len;
-    if (loc < 0) temp.d_total_digit += (loc + len - 1);
 
-    temp.sign = 0;
+    if (a.i_total_digit == 0)
+    {
+        i = 0;
+        while (a.d_digit[i] == 0) 
+        {
+            temp.d_total_digit--;
+            i++;
+        }
+    }
+
+    if ((temp.d_total_digit < 0) && (abs(loc) <= a.d_total_digit))
+    {
+        int start_point = a.d_total_digit + temp.d_total_digit;
+        while (a.d_digit[start_point - temp.i_total_digit] == 0) 
+        {
+            temp.d_total_digit++;
+            temp.i_total_digit--;
+        }
+    }
 
     int temp_loc = loc;
-
     for (i = 1; i <= temp.i_total_digit; i++)
     {
+        while (temp.d_total_digit < 0)
+        {
+            temp.i_digit[LIMIT - i] = 0;
+            temp.d_total_digit++;
+            i++;
+        }
         if (temp_loc > 0) temp.i_digit[LIMIT-i] = a.i_digit[LIMIT-temp_loc];
-        else temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
+        else 
+        {
+            if (abs(temp_loc) >= a.d_total_digit)
+            {
+                temp.d_total_digit = abs(temp_loc);
+                break;
+            }
+            temp.i_digit[LIMIT-i] = a.d_digit[abs(temp_loc)];
+        }
         temp_loc++;
     }
+    
 
     i = temp.i_total_digit;
     while (temp.i_digit[LIMIT-i] == 0)
@@ -498,7 +535,6 @@ struct BigNum make_temp(struct BigNum a, struct BigNum b, int loc, int len)
         temp.i_total_digit--;
         i--;
     }
-
 
     for (i = 0; i < temp.d_total_digit; i++)
     {
