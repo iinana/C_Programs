@@ -320,9 +320,10 @@ void down_int(struct BigNum *num)
         }       
     }
     
-    if (num->i_digit[LIMIT - len] == 0)
+    while (num->i_digit[LIMIT-len] == 0)
     {
-        do {len--;} while (num->i_digit[LIMIT-len] == 0);
+        len--;
+        if (len == 0) break;
     }
     num->i_total_digit = len;
 }
@@ -466,7 +467,7 @@ struct BigNum divi(struct BigNum a, struct BigNum b)
 
             save_res(&res, loc, count);
             printf("loc = %d, count = %d, res.int_total_degit = %d\n", loc, count, res.i_total_digit);
-            if ((abs(loc) >= 99) || ((temp.d_total_digit == 0) && (temp.i_total_digit == 0))) return res;
+            if ((a.d_total_digit >= 99) || (abs(loc) >= 99) || ((temp.d_total_digit == 0) && (temp.i_total_digit == 0))) return res;
         } while (count == 0);
 
         diff = len - temp.i_total_digit;
