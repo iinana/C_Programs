@@ -22,6 +22,8 @@ int main()
     for (int x = 0; x < stu; x++) avg[x] = get_avg(score[x], sub);
 
     for (int x = 0; x < stu; x++) printf("Average and Rank of Student %d : %3d, %2d\n", x, avg[x], get_rank(avg, stu, x));
+
+    free(score);
 }
 
 void input_score(int stu, int sub, int (*score)[sub])
