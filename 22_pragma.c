@@ -1,5 +1,6 @@
 #include <stdio.h>
 #pragma pack(1)
+// make struct 1 byte unit
 // prevent compiler to make struct 4 byte unit (unnecessary byte is wasted)
 
 struct Weird
