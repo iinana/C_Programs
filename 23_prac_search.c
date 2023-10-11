@@ -18,43 +18,27 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    int i = 0;
+    char word[50];
+    int i = 0, count = 0;
 
-    char c;
-    int count = 0, word_count = 0;
-    
-    while ((c = fgetc(fp)) != EOF)
+    int break_point = 1;
+    while (break_point)
     {
         i = 0;
-        word_count++;
-        if (c == ' ') word_count = 0;
-        while ((tolower(c) == argv[1][i]) && (argv[1][i] != '\0'))
-        {
-            c = fgetc(fp);
-            word_count++;
-            i++;
+        while (((word[i] = tolower(fgetc(fp))) != EOF) && isalpha(word[i])) i++;
 
-            if (c == ' ')
-            {
-                word_count = 0;
-                break;
-            }
-        }
-        if (i == strlen(argv[1])) 
+        if (word[i] == EOF) break_point = 0;
+        word[i] = '\0';
+        
+        if (strstr(word, argv[1]) != NULL)
         {
             count++;
-            printf("word_count includes '%s' : ", argv[1]);
-            fseek(fp, -word_count, SEEK_CUR);
-            while((c = fgetc(fp)) != ' ') 
-            {
-                if (!isalpha(c)) break;
-                printf("%c", c);
-            }
-            printf("\n");
+            printf("word includes '%s' : %s\n", argv[1], word);
         }
     }
+
     printf("-----------------------------------------------------------\n");
     printf("['%s' search result] %d times found\n", argv[1], count);
-
+    
     fclose(fp);
 }
